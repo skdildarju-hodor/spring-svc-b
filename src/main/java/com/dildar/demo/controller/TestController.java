@@ -11,7 +11,7 @@ import java.util.Map;
 public class TestController {
 
     // GET  /api/hello?name=Alice
-    @GetMapping("/hello")
+    @GetMapping("/hello2")
     public ResponseEntity<ResultDto> hello(@RequestParam(value = "name", defaultValue = "World") String name) {
         String message = String.format("Hello, %s!", capitalize(name));
         ResultDto result = new ResultDto("success", message);
@@ -19,7 +19,7 @@ public class TestController {
     }
 
     // GET /api/health
-    @GetMapping("/health")
+    @GetMapping("/health2")
     public ResponseEntity<Map<String, String>> health() {
         Map<String, String> status = new HashMap<>();
         status.put("status", "UP");
@@ -27,7 +27,7 @@ public class TestController {
     }
 
     // POST /api/echo  (returns whatever JSON you send under "received")
-    @PostMapping("/echo")
+    @PostMapping("/echo2")
     public ResponseEntity<Map<String, Object>> echo(@RequestBody Map<String, Object> payload) {
         Map<String, Object> resp = new HashMap<>();
         resp.put("status", "ok");
