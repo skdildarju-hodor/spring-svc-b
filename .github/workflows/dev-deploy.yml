@@ -3,17 +3,14 @@ name: dev-deploy (Cloud Run, WIF)
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - "**"
-      - ".github/workflows/dev-deploy.yml"
 
 permissions:
   contents: read
   id-token: write
 
 env:
-  REGION: ${{ secrets.CLOUD_RUN_REGION }}
   PROJECT_ID: ${{ secrets.DEV_PROJECT_ID }}
+  REGION: ${{ secrets.CLOUD_RUN_REGION }}
   REPOSITORY: ${{ secrets.AR_REPO_DEV }}
   SERVICE: ${{ secrets.CLOUD_RUN_SERVICE_DEV }}
 
@@ -36,19 +33,10 @@ jobs:
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Debug identity (gcloud + env)
-        run: |
-          env | sort | grep -E 'GOOGLE_APPLICATION_CREDENTIALS|CLOUDSDK_AUTH'
-          gcloud auth list || true
-          gcloud auth print-access-token | head -c 20 && echo " ...token ok"
-
       - name: Docker login (Artifact Registry)
         run: |
-          gcloud config set project "${{ env.PROJECT_ID }}"
           TOKEN="$(gcloud auth print-access-token)"
           echo "$TOKEN" | docker login -u oauth2accesstoken --password-stdin "https://${{ env.REGION }}-docker.pkg.dev"
-      
-      
 
       - name: Build & push image
         run: |
