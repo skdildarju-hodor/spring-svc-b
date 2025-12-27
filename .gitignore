@@ -1,0 +1,201 @@
+# Comprehensive .gitignore for a Maven + Spring Boot project
+# Keep files necessary for build, ignore user-specific, IDE, OS, build artifacts, logs, secrets, and container artifacts.
+
+####################
+# Build / package
+####################
+/target/
+/out/
+/dist/
+/build/
+/bin/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+
+####################
+# Maven
+####################
+/target/
+/pom.xml.tag
+/pom.xml.releaseBackup
+/pom.xml.versionsBackup
+/release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+# keep the wrapper jar if you commit it:
+!.mvn/wrapper/maven-wrapper.jar
+
+####################
+# Gradle (if ever used)
+####################
+.gradle/
+/build/
+
+####################
+# Eclipse
+####################
+.classpath
+.project
+.settings/
+.factorypath
+
+####################
+# IntelliJ IDEA
+####################
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+# JetBrains Rider
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/**/modules.xml
+.idea/**/workspace*.xml
+
+####################
+# Visual Studio Code
+####################
+.vscode/
+
+####################
+# NetBeans
+####################
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+####################
+# Logs and temp files
+####################
+*.log
+logs/
+*.log.*
+hs_err_pid*
+hs_err_pid*.log
+replay_pid*
+*.tmp
+*.temp
+*.swp
+
+####################
+# Test / reports
+####################
+/target/surefire-reports/
+/target/failsafe-reports/
+/test-output/
+coverage/
+jacoco.exec
+*.lcov
+
+####################
+# OS generated
+####################
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+####################
+# Runtime / process / pid
+####################
+*.pid
+*.seed
+*.pid.lock
+nohup.out
+
+####################
+# Application config (local / secret files)
+# NOTE: keep shared config in repo; ignore local overrides & secrets
+####################
+# Environment files
+.env
+.env.local
+.env.*.local
+# Spring Boot local overrides / secrets (adjust to taste)
+application-local.yml
+application-local.properties
+application-*.local.yml
+application-*.local.properties
+# credential / keystore / secrets
+*.jks
+*.keystore
+*.p12
+credentials.yml
+secrets.yml
+*.pem
+*.pfx
+*.crt
+*.key
+
+####################
+# Containers / Docker
+####################
+docker-compose.override.yml
+docker-compose.*.yml
+.docker/
+docker-compose.local.yml
+.env.docker
+# images / built artifacts (not Dockerfile)
+*.img
+
+####################
+# SSH / auth
+####################
+id_rsa
+id_rsa.pub
+id_ecdsa
+id_ecdsa.pub
+*.pub
+
+####################
+# IDE / tooling caches
+####################
+.cache/
+.metadata/
+*.log
+*.cache
+.idea_modules/
+.idea/**/modules.xml
+
+####################
+# Generated sources
+####################
+/target/generated-sources/
+/target/generated-test-sources/
+/src/main/generated/
+/src/test/generated/
+
+####################
+# Dependency / package managers
+####################
+node_modules/
+bower_components/
+jspm_packages/
+
+####################
+# Misc
+####################
+# Sensitive files sometimes present in projects
+gradle.properties
+local.properties
+.settings/
+*.iml
+*.class
+*.orig
+*.rej
+
+# End of .gitignore

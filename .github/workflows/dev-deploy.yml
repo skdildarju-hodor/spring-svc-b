@@ -1,0 +1,67 @@
+name: dev-deploy (Cloud Run, WIF)
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "**"
+      - ".github/workflows/dev-deploy.yml"
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  REGION: ${{ secrets.CLOUD_RUN_REGION }}
+  PROJECT_ID: ${{ secrets.DEV_PROJECT_ID }}
+  REPOSITORY: ${{ secrets.AR_REPO_DEV }}
+  SERVICE: ${{ secrets.CLOUD_RUN_SERVICE_DEV }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Auth to Google Cloud (WIF)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER_PRO }}
+          service_account: ${{ secrets.TF_DEV_SA_PRO }}
+          create_credentials_file: true
+          export_environment_variables: true
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Debug identity (gcloud + env)
+        run: |
+          env | sort | grep -E 'GOOGLE_APPLICATION_CREDENTIALS|CLOUDSDK_AUTH'
+          gcloud auth list || true
+          gcloud auth print-access-token | head -c 20 && echo " ...token ok"
+
+      - name: Docker login (Artifact Registry)
+        run: |
+          gcloud config set project "${{ env.PROJECT_ID }}"
+          TOKEN="$(gcloud auth print-access-token)"
+          echo "$TOKEN" | docker login -u oauth2accesstoken --password-stdin "https://${{ env.REGION }}-docker.pkg.dev"
+      
+      
+
+      - name: Build & push image
+        run: |
+          IMAGE_URI="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:${{ github.sha }}"
+          docker build -t "$IMAGE_URI" .
+          docker push "$IMAGE_URI"
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+
+      - name: Deploy to Cloud Run (dev)
+        run: |
+          gcloud run deploy "${{ env.SERVICE }}" \
+            --image "${{ env.IMAGE_URI }}" \
+            --region "${{ env.REGION }}" \
+            --project "${{ env.PROJECT_ID }}" \
+            --allow-unauthenticated \
+            --quiet
